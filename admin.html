@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — Senarai Murid DELIMa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--merah:#7A0B1E;--merah-tua:#4A0714;--krim:#FBF4F2;--garis:#E3D2CF;--teks:#2A1216;--lembut:#7A5A5F;--emas:#C79A2E}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--krim);color:var(--teks);padding:22px 16px 60px}
+  .wrap{max-width:900px;margin:0 auto}
+  h1{font-family:'Bricolage Grotesque',sans-serif;font-size:24px;color:var(--merah-tua)}
+  .kecil{font-size:12px;color:var(--lembut);margin-top:4px}
+  .kad{background:#fff;border:1px solid var(--garis);border-radius:14px;padding:18px;margin-top:16px}
+  .kad h2{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;color:var(--merah-tua);margin-bottom:12px}
+  label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--merah-tua);margin:10px 0 5px}
+  input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--garis);border-radius:9px;font-family:inherit;font-size:14px;background:#fff}
+  textarea{min-height:120px;resize:vertical;font-family:ui-monospace,monospace;font-size:12.5px}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--merah);outline-offset:1px}
+  button{font-family:inherit;font-weight:700;border:0;border-radius:9px;padding:11px 16px;cursor:pointer;font-size:13px}
+  .utama{background:linear-gradient(180deg,#9E1129,#6E0A1B);color:#fff}
+  .kedua{background:#F1E4E1;color:var(--merah-tua)}
+  .bahaya{background:#fff;color:#B3261E;border:1px solid #E9C4C0;padding:6px 10px;font-size:12px}
+  .baris{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
+  table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+  th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--lembut);border-bottom:1px solid var(--garis);padding:8px 6px}
+  td{padding:9px 6px;border-bottom:1px solid #F2E8E6;vertical-align:middle}
+  tr:hover td{background:#FDF8F7}
+  .pesan{margin-top:12px;font-size:13px;font-weight:600;min-height:18px}
+  .ok{color:#146C43}.ralat{color:#B3261E}
+  .sembunyi{display:none}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:10px}
+  @media(max-width:640px){.grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Admin — Senarai Murid DELIMa</h1>
+  <div class="kecil">Hanya guru berdaftar boleh menambah atau memadam rekod.</div>
+
+  <!-- LOG MASUK -->
+  <section class="kad" id="kadLogin">
+    <h2>Log masuk guru</h2>
+    <label for="emel">Emel</label>
+    <input id="emel" type="email" autocomplete="username" placeholder="guru@sekolah.edu.my">
+    <label for="katalaluan">Kata laluan</label>
+    <input id="katalaluan" type="password" autocomplete="current-password" placeholder="••••••••">
+    <div class="baris"><button class="utama" id="btnLogin">Log masuk</button></div>
+    <div class="pesan ralat" id="pesanLogin"></div>
+  </section>
+
+  <!-- PANEL ADMIN -->
+  <div id="panel" class="sembunyi">
+    <section class="kad">
+      <div class="baris" style="margin:0;justify-content:space-between">
+        <span class="kecil" id="siapa"></span>
+        <button class="kedua" id="btnLogout">Log keluar</button>
+      </div>
+    </section>
+
+    <section class="kad">
+      <h2>Tambah seorang murid</h2>
+      <div class="grid3">
+        <div><label for="fKelas">Kelas</label><input id="fKelas" placeholder="4 AMANAH"></div>
+        <div><label for="fNama">Nama murid</label><input id="fNama" placeholder="AHMAD BIN ALI"></div>
+        <div><label for="fDelima">ID DELIMa</label><input id="fDelima" type="email" placeholder="m123456@moe-dl.edu.my"></div>
+      </div>
+      <div class="baris"><button class="utama" id="btnTambah">Simpan murid</button></div>
+      <div class="pesan" id="pesanTambah"></div>
+    </section>
+
+    <section class="kad">
+      <h2>Import ramai (satu baris satu murid)</h2>
+      <div class="kecil">Format: <b>kelas,nama,id delima</b></div>
+      <label for="csv">Tampal senarai</label>
+      <textarea id="csv" placeholder="4 AMANAH,AHMAD BIN ALI,m123456@moe-dl.edu.my
+4 AMANAH,SITI BINTI OMAR,m123457@moe-dl.edu.my"></textarea>
+      <div class="baris">
+        <button class="utama" id="btnImport">Import senarai</button>
+        <button class="kedua" id="btnEksport">Muat turun CSV</button>
+      </div>
+      <div class="pesan" id="pesanImport"></div>
+    </section>
+
+    <section class="kad">
+      <h2>Senarai murid (<span id="jumlah">0</span>)</h2>
+      <label for="tapis">Cari nama atau kelas</label>
+      <input id="tapis" placeholder="Taip untuk menapis…">
+      <table>
+        <thead><tr><th>Kelas</th><th>Nama</th><th>ID DELIMa</th><th></th></tr></thead>
+        <tbody id="jadual"></tbody>
+      </table>
+      <div class="pesan" id="pesanSenarai"></div>
+    </section>
+  </div>
+</div>
+
+<script type="module">
+/* ===== Salin config yang SAMA seperti index.html ===== */
+const firebaseConfig = {
+  apiKey:            "MASUKKAN_API_KEY",
+  authDomain:        "PROJEK.firebaseapp.com",
+  projectId:         "PROJEK",
+  storageBucket:     "PROJEK.appspot.com",
+  messagingSenderId: "0000000000",
+  appId:             "1:0000000000:web:xxxxxxxx"
+};
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, writeBatch }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const el   = id => document.getElementById(id);
+let semua  = [];
+
+/* ---- auth ---- */
+el("btnLogin").onclick = async () => {
+  el("pesanLogin").textContent = "";
+  try{
+    await signInWithEmailAndPassword(auth, el("emel").value.trim(), el("katalaluan").value);
+  }catch(e){
+    el("pesanLogin").textContent = "Emel atau kata laluan tidak sah.";
+  }
+};
+el("btnLogout").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, user => {
+  el("kadLogin").classList.toggle("sembunyi", !!user);
+  el("panel").classList.toggle("sembunyi", !user);
+  if (user){ el("siapa").textContent = "Log masuk sebagai " + user.email; muat(); }
+});
+
+/* ---- baca ---- */
+async function muat(){
+  const snap = await getDocs(collection(db,"murid"));
+  semua = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+  semua.sort((a,b) => (a.kelas||"").localeCompare(b.kelas||"","ms",{numeric:true})
+                   || (a.nama||"").localeCompare(b.nama||"","ms"));
+  lukis();
+}
+
+function lukis(){
+  const cari = el("tapis").value.trim().toLowerCase();
+  const senarai = semua.filter(m =>
+    !cari || (m.nama||"").toLowerCase().includes(cari) || (m.kelas||"").toLowerCase().includes(cari));
+  el("jumlah").textContent = semua.length;
+  el("jadual").innerHTML = senarai.map(m => `
+    <tr>
+      <td>${lindung(m.kelas)}</td>
+      <td>${lindung(m.nama)}</td>
+      <td>${lindung(m.delima)}</td>
+      <td style="text-align:right"><button class="bahaya" data-buang="${m.id}">Padam</button></td>
+    </tr>`).join("")
+    || `<tr><td colspan="4" style="color:#7A5A5F;padding:18px 6px">Tiada rekod dipaparkan.</td></tr>`;
+}
+const lindung = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+el("tapis").oninput = lukis;
+
+/* ---- tambah ---- */
+el("btnTambah").onclick = async () => {
+  const kelas = el("fKelas").value.trim().toUpperCase();
+  const nama  = el("fNama").value.trim().toUpperCase();
+  const delima= el("fDelima").value.trim().toLowerCase();
+  const p = el("pesanTambah");
+  if (!kelas || !nama || !delima){ p.className="pesan ralat"; p.textContent="Lengkapkan ketiga-tiga medan."; return; }
+  try{
+    await addDoc(collection(db,"murid"), { kelas, nama, delima, aktif:true });
+    p.className="pesan ok"; p.textContent = nama + " disimpan.";
+    el("fNama").value = ""; el("fDelima").value = "";
+    muat();
+  }catch(e){ p.className="pesan ralat"; p.textContent="Gagal menyimpan: " + e.code; }
+};
+
+/* ---- padam ---- */
+el("jadual").onclick = async e => {
+  const id = e.target.dataset.buang;
+  if (!id) return;
+  if (!confirm("Padam rekod ini?")) return;
+  await deleteDoc(doc(db,"murid",id));
+  muat();
+};
+
+/* ---- import ---- */
+el("btnImport").onclick = async () => {
+  const p = el("pesanImport");
+  const baris = el("csv").value.split("\n").map(b=>b.trim()).filter(Boolean);
+  if (!baris.length){ p.className="pesan ralat"; p.textContent="Tiada data untuk diimport."; return; }
+  let batch = writeBatch(db), n = 0, langkau = 0;
+  for (const b of baris){
+    const [kelas, nama, delima] = b.split(",").map(x => (x||"").trim());
+    if (!kelas || !nama || !delima){ langkau++; continue; }
+    batch.set(doc(collection(db,"murid")), {
+      kelas: kelas.toUpperCase(), nama: nama.toUpperCase(), delima: delima.toLowerCase(), aktif:true });
+    if (++n % 400 === 0){ await batch.commit(); batch = writeBatch(db); }
+  }
+  try{
+    await batch.commit();
+    p.className="pesan ok";
+    p.textContent = `${n} rekod diimport${langkau ? `, ${langkau} baris dilangkau kerana tidak lengkap` : ""}.`;
+    el("csv").value = ""; muat();
+  }catch(e){ p.className="pesan ralat"; p.textContent="Gagal import: " + e.code; }
+};
+
+/* ---- eksport ---- */
+el("btnEksport").onclick = () => {
+  const isi = "kelas,nama,delima\n" + semua.map(m=>`${m.kelas},${m.nama},${m.delima}`).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([isi], {type:"text/csv"}));
+  a.download = "senarai-murid-delima.csv"; a.click();
+};
+</script>
+</body>
+</html>

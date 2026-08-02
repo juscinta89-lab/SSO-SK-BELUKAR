@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Single Sign On Launchpad — SK Belukar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --merah-dlm:#2B0410;
+    --merah:#7A0B1E;
+    --merah-tua:#4A0714;
+    --panel-gelap:#3E0614;
+    --panel-gelap-2:#5A0A1E;
+    --krim:#FBF4F2;
+    --krim-2:#F1E4E1;
+    --emas:#E8B84B;
+    --emas-lembut:#F6D98A;
+    --teks:#2A1216;
+    --teks-lembut:#7A5A5F;
+    --garis:#E3D2CF;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    color:var(--teks);
+    background:
+      radial-gradient(1200px 700px at 50% -10%, var(--merah) 0%, var(--merah-tua) 45%, var(--merah-dlm) 100%),
+      var(--merah-dlm);
+    background-attachment:fixed;
+    padding:32px 18px 56px;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .tajuk{text-align:center;margin-bottom:26px}
+  .tajuk h1{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:800;font-size:clamp(26px,5.5vw,44px);
+    letter-spacing:.02em;color:#fff;text-transform:uppercase;
+    text-shadow:0 2px 24px rgba(0,0,0,.45);
+  }
+  .tajuk p{
+    margin-top:6px;color:var(--emas-lembut);font-weight:600;
+    letter-spacing:.18em;font-size:12px;text-transform:uppercase;
+  }
+  .bekas{
+    width:100%;max-width:940px;
+    display:grid;grid-template-columns:1fr 1fr;gap:0;
+    border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 30px 70px rgba(0,0,0,.45);
+  }
+  /* ---------- panel kiri ---------- */
+  .kiri{background:var(--krim);padding:26px 24px 28px}
+  .jata{
+    width:64px;height:64px;margin:0 auto 12px;display:block;object-fit:contain;
+  }
+  .jata-fallback{
+    width:64px;height:64px;margin:0 auto 12px;border-radius:50%;
+    background:linear-gradient(160deg,var(--emas),#C79A2E);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:800;color:#4A0714;font-size:22px;
+  }
+  .kiri h2{
+    font-family:'Bricolage Grotesque',sans-serif;font-size:20px;
+    text-align:center;color:var(--merah-tua);text-transform:uppercase;
+  }
+  .sub{
+    text-align:center;font-size:10px;letter-spacing:.16em;font-weight:700;
+    color:var(--teks-lembut);text-transform:uppercase;margin-top:4px;
+  }
+  .pilihan-tajuk{
+    text-align:center;font-size:11px;font-weight:700;letter-spacing:.12em;
+    color:#B0862A;text-transform:uppercase;margin:18px 0 10px;
+  }
+  .apps{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+    border:1px dashed var(--garis);border-radius:14px;padding:10px;background:#fff;
+  }
+  .app{
+    border:0;background:transparent;cursor:pointer;border-radius:10px;
+    padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;
+    transition:background .18s ease, transform .18s ease;
+  }
+  .app:hover{background:var(--krim-2);transform:translateY(-2px)}
+  .app:focus-visible{outline:2px solid var(--merah);outline-offset:2px}
+  .app .ikon{font-size:22px;line-height:1;filter:grayscale(1);opacity:.55;transition:.18s}
+  .app span{font-size:9.5px;font-weight:700;letter-spacing:.04em;color:var(--teks-lembut);text-transform:uppercase}
+  .app[aria-pressed="true"]{background:#fff;box-shadow:0 0 0 2px var(--merah) inset}
+  .app[aria-pressed="true"] .ikon{filter:none;opacity:1}
+  .app[aria-pressed="true"] span{color:var(--merah-tua)}
+
+  .medan{margin-top:16px}
+  .medan label{
+    display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;
+    color:var(--merah-tua);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;
+  }
+  select,input{
+    width:100%;padding:11px 13px;border:1px solid var(--garis);border-radius:10px;
+    background:#fff;font-family:inherit;font-size:14px;color:var(--teks);
+  }
+  select:focus,input:focus{outline:2px solid var(--merah);outline-offset:1px;border-color:transparent}
+  select:disabled,input:disabled{background:#F6EEEC;color:#A99; cursor:not-allowed}
+  #idDelima{font-weight:600;letter-spacing:.01em}
+
+  .butang-utama{
+    margin-top:20px;width:100%;padding:14px;border:0;border-radius:12px;
+    font-family:inherit;font-weight:700;font-size:13px;letter-spacing:.06em;
+    text-transform:uppercase;cursor:pointer;
+    background:linear-gradient(180deg,#9E1129,#6E0A1B);color:#fff;
+    box-shadow:0 8px 18px rgba(110,10,27,.35);transition:.18s;
+  }
+  .butang-utama:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 12px 24px rgba(110,10,27,.42)}
+  .butang-utama:disabled{background:#DED0CD;color:#9A8683;box-shadow:none;cursor:not-allowed}
+
+  /* ---------- panel kanan ---------- */
+  .kanan{
+    background:linear-gradient(165deg,var(--panel-gelap-2),var(--panel-gelap));
+    color:#F3E3E6;padding:26px 24px 28px;
+  }
+  .kanan h3{
+    font-family:'Bricolage Grotesque',sans-serif;font-size:19px;color:var(--emas);
+    display:flex;align-items:center;gap:8px;padding-bottom:12px;
+    border-bottom:1px solid rgba(232,184,75,.28);
+  }
+  .nota{
+    margin-top:16px;background:rgba(232,184,75,.10);
+    border:1px solid rgba(232,184,75,.30);border-radius:12px;padding:13px 14px;
+  }
+  .nota b{display:block;color:var(--emas-lembut);font-size:13px;margin-bottom:5px}
+  .nota p{font-size:12px;line-height:1.65;color:#E7CFD3}
+  ol{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:13px}
+  ol li{display:flex;gap:11px;font-size:12.5px;line-height:1.6;color:#EBD8DB}
+  ol li b{color:#fff}
+  .no{
+    flex:0 0 20px;height:20px;border-radius:50%;background:var(--emas);
+    color:#3E0614;font-weight:800;font-size:11px;
+    display:flex;align-items:center;justify-content:center;margin-top:1px;
+  }
+  .butang-keluar{
+    margin-top:20px;width:100%;padding:11px;border-radius:999px;cursor:pointer;
+    background:rgba(255,255,255,.08);border:1px solid rgba(232,184,75,.35);
+    color:var(--emas-lembut);font-family:inherit;font-weight:600;font-size:12px;
+    transition:.18s;
+  }
+  .butang-keluar:hover{background:rgba(255,255,255,.14)}
+
+  .status{
+    margin-top:12px;font-size:12px;text-align:center;min-height:16px;
+    color:var(--merah);font-weight:600;
+  }
+  footer{margin-top:22px;font-size:11px;color:rgba(255,255,255,.45);text-align:center}
+
+  @media (max-width:760px){
+    .bekas{grid-template-columns:1fr}
+    body{padding:22px 14px 40px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="tajuk">
+  <h1>Single Sign On Launchpad</h1>
+  <p id="namaSekolahAtas">SK Belukar, Kemaman</p>
+</div>
+
+<main class="bekas">
+  <!-- ================= KIRI ================= -->
+  <section class="kiri">
+    <div class="jata-fallback" id="logo">SB</div>
+    <h2 id="namaSekolah">SK Belukar, Kemaman</h2>
+    <div class="sub">Portal Log Masuk DELIMa</div>
+
+    <div class="pilihan-tajuk">Pilih Aplikasi</div>
+    <div class="apps" id="senaraiApp"></div>
+
+    <div class="medan">
+      <label for="kelas">Pilih Kelas</label>
+      <select id="kelas"><option value="">-- Memuatkan --</option></select>
+    </div>
+
+    <div class="medan">
+      <label for="murid">Pilih Nama Murid</label>
+      <select id="murid" disabled><option value="">-- Pilih Kelas Dahulu --</option></select>
+    </div>
+
+    <div class="medan">
+      <label for="idDelima">ID DELIMa Murid</label>
+      <input id="idDelima" type="text" readonly placeholder="ID DELIMa dipaparkan di sini">
+    </div>
+
+    <button class="butang-utama" id="butangLog" disabled>Log Masuk Google Classroom</button>
+    <div class="status" id="status"></div>
+  </section>
+
+  <!-- ================= KANAN ================= -->
+  <section class="kanan">
+    <h3>🔑 Cara Penggunaan</h3>
+
+    <div class="nota">
+      <b>Apa itu Single Sign-On (SSO)?</b>
+      <p>Portal ini membuka halaman log masuk Google dengan ID DELIMa anda sudah terisi, supaya tiada pertembungan (<i>clash</i>) dengan akaun Google peribadi pada peranti yang sama.</p>
+    </div>
+
+    <ol>
+      <li><span class="no">1</span><span><b>Pilih kelas &amp; nama.</b> Pilih kelas dahulu, kemudian pilih nama anda daripada senarai.</span></li>
+      <li><span class="no">2</span><span><b>Semak ID DELIMa.</b> ID akaun rasmi anda akan dipaparkan secara automatik.</span></li>
+      <li><span class="no">3</span><span><b>Pilih aplikasi.</b> Klik ikon Classroom, DELIMa, AINS atau Gmail di dalam bingkai di atas.</span></li>
+      <li><span class="no">4</span><span><b>Masukkan kata laluan.</b> Tekan <b>Next</b> pada paparan Google, kemudian taip kata laluan akaun DELIMa anda.</span></li>
+    </ol>
+
+    <button class="butang-keluar" id="butangKeluar">Log keluar semua akaun Google dahulu</button>
+  </section>
+</main>
+
+<footer>Kata laluan tidak disimpan dalam portal ini.</footer>
+
+<script type="module">
+/* ==========================================================
+   1) TETAPAN SEKOLAH — ubah bahagian ini sahaja
+   ========================================================== */
+const TETAPAN = {
+  namaSekolah : "SK Belukar, Kemaman",
+  logoUrl     : "",           // cth: "logo.png" (letak fail dalam repo). Kosongkan untuk guna inisial.
+  apps: [
+    { id:"classroom", nama:"Classroom", ikon:"📘", url:"https://classroom.google.com/",  label:"Log Masuk Google Classroom" },
+    { id:"delima",    nama:"DELIMa",    ikon:"🌐", url:"https://sso.moe.edu.my/",        label:"Log Masuk Portal DELIMa" },
+    { id:"ains",      nama:"AINS",      ikon:"📗", url:"https://ains.moe.gov.my/",       label:"Log Masuk AINS" },
+    { id:"gmail",     nama:"Gmail",     ikon:"✉️", url:"https://mail.google.com/",       label:"Log Masuk Gmail" }
+  ]
+};
+
+/* ==========================================================
+   2) TETAPAN FIREBASE — salin dari Firebase Console
+   ========================================================== */
+const firebaseConfig = {
+  apiKey:            "MASUKKAN_API_KEY",
+  authDomain:        "PROJEK.firebaseapp.com",
+  projectId:         "PROJEK",
+  storageBucket:     "PROJEK.appspot.com",
+  messagingSenderId: "0000000000",
+  appId:             "1:0000000000:web:xxxxxxxx"
+};
+
+/* ==========================================================
+   3) LOGIK (tidak perlu diubah)
+   ========================================================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const el = id => document.getElementById(id);
+const selKelas = el("kelas"), selMurid = el("murid"), inpId = el("idDelima");
+const btnLog = el("butangLog"), status = el("status");
+
+let dataKelas = {};              // { "4 AMANAH": [ {nama, delima}, ... ] }
+let appTerpilih = TETAPAN.apps[0];
+
+// --- kepala halaman
+el("namaSekolah").textContent = TETAPAN.namaSekolah;
+el("namaSekolahAtas").textContent = TETAPAN.namaSekolah;
+if (TETAPAN.logoUrl) {
+  const img = document.createElement("img");
+  img.src = TETAPAN.logoUrl; img.alt = "Logo sekolah"; img.className = "jata";
+  el("logo").replaceWith(img);
+} else {
+  el("logo").textContent = TETAPAN.namaSekolah.replace(/[^A-Za-z ]/g,"")
+    .split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+}
+
+// --- ikon aplikasi
+const wrapApp = el("senaraiApp");
+TETAPAN.apps.forEach((a,i) => {
+  const b = document.createElement("button");
+  b.className = "app"; b.type = "button";
+  b.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+  b.innerHTML = `<span class="ikon">${a.ikon}</span><span>${a.nama}</span>`;
+  b.onclick = () => {
+    appTerpilih = a;
+    [...wrapApp.children].forEach(c => c.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    btnLog.textContent = a.label;
+  };
+  wrapApp.appendChild(b);
+});
+btnLog.textContent = TETAPAN.apps[0].label;
+
+// --- ambil data murid
+const db = getFirestore(initializeApp(firebaseConfig));
+
+async function muatMurid(){
+  try{
+    const snap = await getDocs(collection(db, "murid"));
+    dataKelas = {};
+    snap.forEach(d => {
+      const m = d.data();
+      if (!m.nama || !m.delima || m.aktif === false) return;
+      const k = (m.kelas || "Tiada Kelas").toUpperCase();
+      (dataKelas[k] ||= []).push({ nama: m.nama, delima: m.delima });
+    });
+    Object.values(dataKelas).forEach(l => l.sort((a,b)=>a.nama.localeCompare(b.nama,"ms")));
+
+    const senarai = Object.keys(dataKelas).sort((a,b)=>a.localeCompare(b,"ms",{numeric:true}));
+    selKelas.innerHTML = '<option value="">-- Pilih Kelas --</option>' +
+      senarai.map(k=>`<option value="${k}">${k}</option>`).join("");
+
+    if (!senarai.length) status.textContent = "Belum ada rekod murid. Sila tambah melalui halaman admin.";
+  }catch(e){
+    console.error(e);
+    selKelas.innerHTML = '<option value="">-- Gagal memuatkan --</option>';
+    status.textContent = "Tidak dapat menyambung ke pangkalan data. Semak sambungan internet.";
+  }
+}
+muatMurid();
+
+// --- interaksi
+selKelas.onchange = () => {
+  const k = selKelas.value;
+  reset();
+  if (!k) { selMurid.disabled = true; selMurid.innerHTML = '<option value="">-- Pilih Kelas Dahulu --</option>'; return; }
+  selMurid.disabled = false;
+  selMurid.innerHTML = '<option value="">-- Pilih Nama --</option>' +
+    dataKelas[k].map((m,i)=>`<option value="${i}">${m.nama}</option>`).join("");
+};
+
+selMurid.onchange = () => {
+  const k = selKelas.value, i = selMurid.value;
+  if (i === "") return reset();
+  inpId.value = dataKelas[k][i].delima;
+  btnLog.disabled = false;
+  status.textContent = "";
+};
+
+function reset(){ inpId.value = ""; btnLog.disabled = true; status.textContent = ""; }
+
+btnLog.onclick = () => {
+  const emel = inpId.value.trim();
+  if (!emel) return;
+  const url = "https://accounts.google.com/AccountChooser?Email=" + encodeURIComponent(emel) +
+              "&continue=" + encodeURIComponent(appTerpilih.url);
+  window.open(url, "_blank", "noopener");
+  status.textContent = "Tab baharu dibuka. Tekan Next, kemudian masukkan kata laluan anda.";
+};
+
+el("butangKeluar").onclick = () => window.open("https://accounts.google.com/Logout","_blank","noopener");
+</script>
+</body>
+</html>
