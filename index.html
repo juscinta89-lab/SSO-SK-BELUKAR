@@ -223,13 +223,15 @@
    1) TETAPAN SEKOLAH — ubah bahagian ini sahaja
    ========================================================== */
 const TETAPAN = {
-  namaSekolah : "SK Belukar, Machang ",
+  namaSekolah : "SK Belukar, Machang",
   logoUrl     : "logo.png",           // cth: "logo.png" (letak fail dalam repo). Kosongkan untuk guna inisial.
+  // chooser:true  = laman Google, emel diisi automatik melalui AccountChooser
+  // chooser:false = laman luar, buka terus (murid klik "Log Masuk dengan Google")
   apps: [
-    { id:"classroom", nama:"Classroom", ikon:"📘", url:"https://classroom.google.com/",  label:"Log Masuk Google Classroom" },
-    { id:"delima",    nama:"DELIMa",    ikon:"🌐", url:"https://sso.moe.edu.my/",        label:"Log Masuk Portal DELIMa" },
-    { id:"ains",      nama:"AINS",      ikon:"📗", url:"https://ains.moe.gov.my/",       label:"Log Masuk AINS" },
-    { id:"gmail",     nama:"Gmail",     ikon:"✉️", url:"https://mail.google.com/",       label:"Log Masuk Gmail" }
+    { id:"classroom", nama:"Classroom", ikon:"📘", chooser:true,  url:"https://classroom.google.com/",           label:"Log Masuk Google Classroom" },
+    { id:"delima",    nama:"DELIMa",    ikon:"🌐", chooser:false, url:"https://d2.delima.edu.my/login",          label:"Log Masuk Portal DELIMa" },
+    { id:"ains",      nama:"AINS",      ikon:"📗", chooser:false, url:"https://ains.moe.gov.my/login?returnUrl=/", label:"Log Masuk AINS NILAM" },
+    { id:"gmail",     nama:"Gmail",     ikon:"✉️", chooser:true,  url:"https://mail.google.com/mail/u/0/",       label:"Log Masuk Gmail" }
   ]
 };
 
@@ -284,6 +286,7 @@ TETAPAN.apps.forEach((a,i) => {
     [...wrapApp.children].forEach(c => c.setAttribute("aria-pressed","false"));
     b.setAttribute("aria-pressed","true");
     btnLog.textContent = a.label;
+    status.textContent = "";
   };
   wrapApp.appendChild(b);
 });
@@ -340,10 +343,14 @@ function reset(){ inpId.value = ""; btnLog.disabled = true; status.textContent =
 btnLog.onclick = () => {
   const emel = inpId.value.trim();
   if (!emel) return;
-  const url = "https://accounts.google.com/AccountChooser?Email=" + encodeURIComponent(emel) +
-              "&continue=" + encodeURIComponent(appTerpilih.url);
+  const url = appTerpilih.chooser
+    ? "https://accounts.google.com/AccountChooser?Email=" + encodeURIComponent(emel) +
+      "&continue=" + encodeURIComponent(appTerpilih.url)
+    : appTerpilih.url;
   window.open(url, "_blank", "noopener");
-  status.textContent = "Tab baharu dibuka. Tekan Next, kemudian masukkan kata laluan anda.";
+  status.textContent = appTerpilih.chooser
+    ? "Tab dibuka. Tekan Next, kemudian masukkan kata laluan anda."
+    : "Tab dibuka. Klik 'Log Masuk dengan Google' dan pilih ID DELIMa anda.";
 };
 
 el("butangKeluar").onclick = () => window.open("https://accounts.google.com/Logout","_blank","noopener");
